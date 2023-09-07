@@ -1,4 +1,8 @@
 import { Component } from 'react';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Statistics } from './Statistics/Statistics';
+import { Section } from './Section/Section';
+import { Notification } from './Notification/Notification';
 
 
 export class App extends Component {
@@ -10,31 +14,56 @@ export class App extends Component {
 
   handleClick = (e) => {
     const item = e.target.name;
-    // console.log(e.target.name);
     this.setState((prev) => ({
-    [item]: prev[item] + 1
-    }))
-  }
+      [item]: prev[item] + 1,
+    }));
+    // this.countTotalFeedback();
+  };
+
+  countTotalFeedback = () => {
+    // this.setState((prev) => ({
+    //   ...prev.state,
+    //   total: prev.good + prev.neutral + prev.bad,
+    // }));
+    //? console.log(this.state);
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  };
+
+  countPositiveFeedbackPercentage = () => {
+    const { good, neutral, bad } = this.state;
+    const total = good + neutral + bad;
+    return Math.round((good * 100) / total);
+  };
 
   render() {
-    console.log(this.state.good);
+    //? console.log(this.state);
+    const total = this.countTotalFeedback();
+    const positivePercentage = this.countPositiveFeedbackPercentage();
+
     return (
       <>
-        <h2>Please leave feedback</h2>
-        <div>
-          <button name="good" onClick={this.handleClick} type='button'>Good</button>
-          <button name="neutral" onClick={this.handleClick} type='button'>Neutral</button>
-          <button name="bad" onClick={this.handleClick} type='button'>Bad</button>
-        </div>
+        <Section title={'Please leave feedback'}>
+          <FeedbackOptions
+            options={['good', 'neutral', 'bad']}
+            onLeaveFeedback={this.handleClick}
+          />
+        </Section>
 
-        <h2>Statistics</h2>
-        <div>{this.state.good}</div>
-        <div>{this.state.neutral}</div>
-        <div>{this.state.bad}</div>
+        <Section title={'Statistics'}>
+          {total ? (
+            <Statistics
+              good={this.state.good}
+              neutral={this.state.neutral}
+              bad={this.state.bad}
+              total={total}
+              positivePercentage={positivePercentage}
+            />
+          ) : (
+            <Notification message='There is no feedback' />
+          )}
+        </Section>
       </>
     );
-  }
+  };
 }
-
-
-
