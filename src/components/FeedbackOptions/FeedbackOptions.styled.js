@@ -1,5 +1,4 @@
 import { styled } from 'styled-components';
-import { hover } from '@testing-library/user-event/dist/hover';
 
 export const Wrap = styled('div')({
   display: 'flex',
